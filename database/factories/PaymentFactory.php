@@ -20,10 +20,10 @@ class PaymentFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'total_amount' => fake()->randomFloat(2,100,1000),
-            'payment_status' => fake()->randomElement(["cancelled","completed","pending"]),
-            'payment_method' => fake()->randomElement(["paypal","debit card"]),
-            'transaction_id' => Str::random(17),
+            'total_amount' => fake()->randomFloat(2, 100, 1000),
+            'payment_status' => fake()->randomElement(['cancelled', 'completed', 'pending']),
+            'payment_method' => fake()->randomElement(['paypal', 'debit card', 'credit card']),
+            'transaction_id' => Str::upper(Str::random(17)),
         ];
     }
 }

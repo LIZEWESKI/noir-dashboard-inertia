@@ -84,13 +84,6 @@ export default function Login({ status, canResetPassword, bgImage}: LoginProps) 
                                 Log in
                             </Button>
                         </div>
-
-                        {/* <div className="text-center text-sm text-muted-foreground">
-                            Don't have an account?{' '}
-                            <TextLink href={route('register')} tabIndex={5}>
-                                Sign up
-                            </TextLink>
-                        </div> */}
                     </>
                 )}
             </Form>

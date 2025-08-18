@@ -18,21 +18,23 @@ class ReservationFactory extends Factory
      */
     public function definition(): array
     {
-        $rand_day = rand(1,3);
-        $check_in_date = now()->copy()->addDays($rand_day);
-        $check_out_date = $check_in_date->copy()->addDays($rand_day);
-        $nightsCount =(int) max(0, $check_in_date->diffInDays($check_out_date)); 
+        $checkIn = fake()->dateTimeBetween('-90 days', 'now');
+        // checkout 1–3 nights later
+        $checkOut = (clone $checkIn)->modify('+' . fake()->numberBetween(1, 3) . ' days');
+
+        $nights = $checkIn->diff($checkOut)->days;
+        $room = Room::inRandomOrder()->first();
 
         return [
-                'user_id' => User::factory(),
-                'room_id' => rand(1,15),
-                'check_in' => $check_in_date->format('Y-m-d'),
-                'check_out' => $check_out_date->format('Y-m-d'),
-                'nights' => $nightsCount,
-                'cleaning_fee' => 25,
-                'service_fee' => 15,
-                'total_price' => fake()->randomFloat(2,115,390),
-                'status' => fake()->randomElement(["pending","active","cancelled"])
+            'user_id' => User::factory(),
+            'room_id' => $room->id ?? Room::factory(), 
+            'check_in' => $checkIn->format('Y-m-d'),
+            'check_out' => $checkOut->format('Y-m-d'),
+            'nights' => $nights,
+            'cleaning_fee' => 25,
+            'service_fee' => 15,
+            'total_price' => fake()->numberBetween(100, 1000),
+            'status' => fake()->randomElement(['pending', 'active', 'cancelled']),
         ];
     }
 }

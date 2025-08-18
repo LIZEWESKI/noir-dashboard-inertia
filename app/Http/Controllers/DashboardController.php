@@ -7,10 +7,11 @@ use App\Models\Payment;
 use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Inertia\Inertia;
 
 class DashboardController extends Controller
 {
-    public function stats()
+    public function index()
     {
         $now = Carbon::now();
         $firstDay = $now->copy()->startOfMonth();
@@ -43,26 +44,28 @@ class DashboardController extends Controller
                 "type" => "number"
             ]
             ];
-        return response()->json($metrics, 200);
+
+            $reservations = Reservation::select([
+                'id',
+                "user_id",
+                "room_id",
+                'check_in',
+                'total_price',
+                'status'
+            ])
+            ->with([
+                'room:id,room_number',
+                'user:id,name'
+            ])
+            ->latest()
+            ->get();
+        return Inertia::render("dashboard",compact("metrics","reservations"));
     }
 
     public function bookingsTable()
     {
-        $reservations = Reservation::select([
-            'id',
-            "user_id",
-            "room_id",
-            'check_in',
-            'total_price',
-            'status'
-        ])
-        ->with([
-            'room:id,room_number',
-            'user:id,name'
-        ])
-        ->latest()
-        ->get();
+        
 
-        return response()->json($reservations, 200);
+        // return response()->json($reservations, 200);
     }
 }

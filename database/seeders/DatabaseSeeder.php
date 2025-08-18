@@ -16,8 +16,6 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // User::factory(10)->create();
-        $reservations = Reservation::factory(60)->create();
-        Payment::factory(30)->hasAttached($reservations)->create();
         $fake_users = [
             [
                 'name' => 'Rick Sanchez',
@@ -39,6 +37,6 @@ class DatabaseSeeder extends Seeder
         $this->call(RoomSeeder::class);
         $this->call(FeatureSeeder::class);
         $this->call(FeatureRoomSeeder::class);
-        // $this->call(ReservationSeeder::class);
+        $this->call(ReservationSeeder::class);
     }
 }
