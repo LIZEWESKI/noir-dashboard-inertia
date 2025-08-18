@@ -4,18 +4,34 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AuthLayout from '@/layouts/auth-layout';
-import { Form, Head } from '@inertiajs/react';
+import AuthSplitLayout from '@/layouts/auth/auth-split-layout';
+import { Form, Head, usePage } from '@inertiajs/react';
 import { LoaderCircle } from 'lucide-react';
-
+import { useEffect } from 'react';
+import { Toaster } from "@/components/ui/sonner"
+import { toast } from "sonner"
+import { SharedData } from '@/types';
 interface LoginProps {
     status?: string;
     canResetPassword: boolean;
+    bgImage: string;
 }
 
-export default function Login({ status, canResetPassword }: LoginProps) {
+export default function Login({ status, canResetPassword, bgImage}: LoginProps) {
+    const {flash}  = usePage<SharedData>().props;
+    useEffect(() => {
+    flash.message && toast.error(flash.message, {
+      descriptionClassName: "text-white/90", 
+      duration: 3000,
+      position: "top-center",
+      style: {
+        backgroundColor: "red",
+        color: "#fff",
+      }
+    })
+  }, [flash]);
     return (
-        <AuthLayout title="Log in to your account" description="Enter your email and password below to log in">
+        <AuthSplitLayout title="Log in to your account" description="Enter your email and password below to log in" bgImage={bgImage}>
             <Head title="Log in" />
 
             <Form method="post" action={route('login')} resetOnSuccess={['password']} className="flex flex-col gap-6">
@@ -32,7 +48,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     autoFocus
                                     tabIndex={1}
                                     autoComplete="email"
-                                    placeholder="email@example.com"
+                                    placeholder="noir@admin.com"
                                 />
                                 <InputError message={errors.email} />
                             </div>
@@ -53,7 +69,7 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                                     required
                                     tabIndex={2}
                                     autoComplete="current-password"
-                                    placeholder="Password"
+                                    placeholder="yoursecretpassword"
                                 />
                                 <InputError message={errors.password} />
                             </div>
@@ -69,17 +85,18 @@ export default function Login({ status, canResetPassword }: LoginProps) {
                             </Button>
                         </div>
 
-                        <div className="text-center text-sm text-muted-foreground">
+                        {/* <div className="text-center text-sm text-muted-foreground">
                             Don't have an account?{' '}
                             <TextLink href={route('register')} tabIndex={5}>
                                 Sign up
                             </TextLink>
-                        </div>
+                        </div> */}
                     </>
                 )}
             </Form>
 
             {status && <div className="mb-4 text-center text-sm font-medium text-green-600">{status}</div>}
-        </AuthLayout>
+            <Toaster/>
+        </AuthSplitLayout>
     );
 }

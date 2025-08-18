@@ -18,9 +18,11 @@ class AuthenticatedSessionController extends Controller
      */
     public function create(Request $request): Response
     {
+        $bgImage = asset('assets/login-bg.jpg');
         return Inertia::render('auth/login', [
             'canResetPassword' => Route::has('password.request'),
             'status' => $request->session()->get('status'),
+            "bgImage" => $bgImage
         ]);
     }
 
@@ -32,8 +34,19 @@ class AuthenticatedSessionController extends Controller
         $request->authenticate();
 
         $request->session()->regenerate();
+        ;
+        // if($request->user()->role === "admin") {
+        //     return redirect()->intended(route('dashboard', absolute: false));
+        // }
+        if ($request->user()->hasAdminRole()) {
+            return redirect()->intended(route('dashboard', absolute: false));
+        }
 
-        return redirect()->intended(route('dashboard', absolute: false));
+        Auth::guard('web')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return back()->with('message', 'Only Admins can Log in');
     }
 
     /**
@@ -46,6 +59,6 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/');
+        return redirect('/login');
     }
 }
