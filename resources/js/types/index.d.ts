@@ -63,6 +63,6 @@ export interface Reservations {
 export interface Metrics{
     name: string;
     description: string;
-    value: number | string;
+    value: number;
     type: string;
 };

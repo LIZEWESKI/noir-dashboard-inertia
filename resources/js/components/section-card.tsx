@@ -7,11 +7,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { useCurrencyFormatter } from "@/hooks/use-currency-formatter";
 import { Metrics } from "@/types";
 import { BadgeDollarSign, Calendar, Home } from "lucide-react";
 import { PropsWithChildren } from "react";
 
 export function SectionCards({metrics = []}:PropsWithChildren<{ metrics?: Metrics[] }>) {
+    const { formatCurrency } = useCurrencyFormatter();
     const iconList = [
       {
         name: "booking",
@@ -32,14 +34,12 @@ export function SectionCards({metrics = []}:PropsWithChildren<{ metrics?: Metric
             <CardHeader>
               <CardDescription>{stat.description}</CardDescription>
               <CardTitle className="text-4xl py-4 font-semibold tabular-nums @[250px]/card:text-3xl">
-                {stat.value}{stat.type === "currency" && "$"}
+                {stat.type === "currency" ? formatCurrency(stat.value,"USD","en-US"): stat.value}
               </CardTitle>
               <CardAction>
-                <Badge variant="outline" key={stat.name}>
+                <Badge variant="outline">
                   {iconList.map(icon => (
-                    <span key={icon.name}>
-                      {icon.name === stat.name && icon.icon}
-                    </span>
+                    icon.name === stat.name && icon.icon
                   ))}
                 </Badge>
               </CardAction>

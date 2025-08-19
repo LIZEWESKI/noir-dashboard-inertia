@@ -11,4 +11,3 @@ export function useStringFormatter() {
 
   return { formatDashedString }
 }
-
