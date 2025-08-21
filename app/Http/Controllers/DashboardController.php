@@ -59,13 +59,22 @@ class DashboardController extends Controller
             ])
             ->latest()
             ->get();
-        return Inertia::render("dashboard",compact("metrics","reservations"));
-    }
 
-    public function bookingsTable()
-    {
-        
+            $bookings = Reservation::selectRaw('DATE(check_in) as date,
+            SUM(CASE WHEN status = "active" THEN 1 ELSE 0 END) as completed_count,
+            SUM(CASE WHEN status = "cancelled" THEN 1 ELSE 0 END) as cancelled_count')
+            ->where('check_in', '>=', now()->subMonths(3)->startOfDay())
+            ->groupBy('date')
+            ->orderBy('date', 'asc')
+            ->get();
 
-        // return response()->json($reservations, 200);
+            $bookings = $bookings->map(function ($item) {
+                return [
+                    'date' => \Carbon\Carbon::parse($item->date)->format('Y-m-d'),
+                    'completed' => (int) $item->completed_count,
+                    'cancelled' => (int) $item->cancelled_count,
+                ];
+            });
+        return Inertia::render("dashboard",compact("metrics","reservations","bookings"));
     }
 }

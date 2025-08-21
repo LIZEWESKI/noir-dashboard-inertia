@@ -45,24 +45,29 @@ export interface User {
 }
 
 export interface Reservations {
-    id: string;
-    user_id: string;
-    room_id: string;
+    id: number;
+    user_id: number;
+    room_id: number;
     check_in: string;
-    total_price: number;
+    total_price: string;
     status: string;
     room : {
-        id: string;
+        id: number;
         room_number: string;
     }
     user: {
-        id: string;
+        id: number;
         name: string;
     }
 }
-export interface Metrics{
+export interface Metrics {
     name: string;
     description: string;
     value: number;
     type: string;
 };
+export interface Bookings {
+    date: string;
+    completed: number;
+    cancelled: number;
+}
